@@ -13,3 +13,7 @@ Changes to the repository's structure, tooling, CI and documentation, by date. E
 - Dependabot, pre-commit and pre-push hooks, a Makefile, EditorConfig and Git attributes.
 - Templates for new skills and domains, issue forms, a pull-request template and CODEOWNERS.
 - Documentation: README, getting started, architecture, authoring, versioning and releases, tooling, roadmap, contributing and security.
+
+### Changed
+
+- Roadmap: added the planned `market-analysis` domain, with a `technical-analysis` proposal covering data and tools, gaps, conventions and the overlap with `equity-screening`.

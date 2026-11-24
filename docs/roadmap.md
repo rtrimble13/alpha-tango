@@ -1,6 +1,6 @@
 # Roadmap
 
-Planned domains and skills, and proposed enhancements to the repository and to `equity-valuation`. Nothing on this page is implemented yet. Each item becomes an issue, then a pull request, when work starts.
+Planned domains and skills, and proposed enhancements to the repository and to `equity-valuation`. Everything here is a proposal unless it is marked as applied. Each item becomes an issue, then a pull request, when work starts.
 
 ## Contents
 
@@ -17,11 +17,34 @@ The taxonomy is meant to grow one domain at a time. A domain is created by the f
 | `equity-research` | Active | `equity-valuation` (released). Candidates: `earnings-review` (a quarter's results against history, guidance and the prior model); `equity-screening` (factor screens and cross-sections on the fafnir panel); `sum-of-the-parts` for conglomerates |
 | `fixed-income` | Planned | `treasury-curve` (curve construction and forward analysis with fit and dismal); `corporate-bond-relative-value` (z-spread against rating and sector curves); `credit-analysis` (issuer credit profile, covenants, recovery) |
 | `macro-research` | Planned | `economic-dashboard` (current conditions from FRED/BLS/BEA with vintages); `recession-indicators` |
+| `market-analysis` | Planned | `technical-analysis`: trend, momentum, volatility and volume indicators, support and resistance, and relative strength against a benchmark or sector ETF. Runs on fafnir daily prices; signals are stated as conditions, not forecasts. See the [proposal](#proposal-technical-analysis). |
 | `portfolio-management` | Planned | `portfolio-analytics` (exposures, risk contribution); `performance-attribution` (Brinson and factor attribution); `rebalancing` |
 | `risk-management` | Candidate | `market-risk` (VaR, expected shortfall, stress tests); `liquidity-risk` |
 | `wealth-planning` | Candidate | `retirement-projection`; `tax-aware-withdrawals` |
 
-When a new domain arrives, check that its skills' descriptions and the existing ones don't overlap. For example, once `fixed-income` exists, `equity-valuation`'s description should stop listing curve work (see item E5 below).
+When a new domain arrives, check that its skills' descriptions and the existing ones don't overlap. For example, `equity-valuation` 2.1.0 stopped listing curve work ahead of a `fixed-income` skill (item E5 below).
+
+### Proposal: technical-analysis
+
+**Domain.** Keep it out of `equity-research`, because technical analysis applies to anything with a price history, not just single companies. Separate plugins also stop chart requests from picking up fundamental skills, and the reverse. If it will only ever cover equities and ETFs, putting it in `equity-research` is an acceptable, simpler choice.
+
+**Data and tools.** Checked against fafnir at `ebe7386`.
+
+- fafnir `price_history`: adjusted prices for indicators; raw prices for price levels such as support, resistance and gaps.
+- `duk ti` computes four indicators: SMA, EMA, RSI and MACD. `duk rc` computes simple, log, cumulative, dividend-adjusted, excess and annualized returns. Any other indicator, such as ATR, Bollinger bands, stochastics, ADX or on-balance volume, needs tested code in the skill's `scripts/` or a new `duk ti` subcommand.
+- Volume is stored. `core.daily_price.volume` is raw (shares, in that day's share terms). `mart.v_daily_price_adjusted` back-adjusts it to post-split terms, which volume indicators need across a split. NAV-priced funds carry volume 0, so volume indicators are n.m. for them.
+- Charts are built in Python and saved with the report.
+
+**Gaps.** The data is daily only, so there is no intraday analysis. There is no options, positioning or sentiment data.
+
+**Conventions.** The house standard in [authoring-skills.md](authoring-skills.md#financial-skill-conventions) applies:
+
+- state each indicator's definition and parameters;
+- keep point-in-time discipline, and compute in code;
+- use neutral language, and end with the disclaimer;
+- for any backtest, disclose look-ahead and survivorship bias, and that delisting returns aren't in the warehouse.
+
+**Overlap with `equity-screening`.** Momentum as a cross-sectional ranking factor belongs to screening. Chart-based signals on one instrument belong to technical analysis. Each skill's description should exclude the other's requests.
 
 ## Repository enhancements
 
