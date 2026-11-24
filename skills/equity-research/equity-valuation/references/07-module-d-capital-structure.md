@@ -21,7 +21,9 @@ Part of the `equity-valuation` skill ([SKILL.md](../SKILL.md)). Section numbers 
 
 ### D.2 Coverage and debt capacity
 
-EBIT / interest, EBITDA / interest, (EBITDA − capex) / interest, FFO / debt (FFO = CFO − ΔNWC, defined), and debt / EBITDA headroom against covenants where covenants are disclosed [S].
+EBIT / interest, EBITDA / interest, (EBITDA − capex) / interest, FFO / debt, and debt / EBITDA headroom against covenants where covenants are disclosed [S].
+
+FFO is cash flow from operations before working-capital changes. With ΔNWC as defined in Phase 4 (NWC_t − NWC_t−1: an increase in working capital is positive and has reduced CFO), FFO = CFO + ΔNWC. Prefer the working-capital lines of the filing's cash-flow statement [S]: FFO = CFO − (those lines as reported, where a build-up is negative). The balance-sheet ΔNWC also moves with acquisitions, disposals and FX, and CFO does not. State which was used.
 
 ### D.3 Liquidity and maturity
 

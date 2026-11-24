@@ -16,6 +16,8 @@ Part of the `equity-valuation` skill ([SKILL.md](../SKILL.md)). Section numbers 
 | H-model | V0 = [D0(1+g_L) + D0·H·(g_S−g_L)]/(r−g_L) |
 | Residual income | V0 = B0 + Σ (E_t − r·B_{t−1})/(1+r)^t |
 | Terminal FCFF (value driver) | TV = NOPAT_{N+1}·(1 − g/ROIC)/(WACC − g) |
+| PV of terminal value (A.4) | Perpetuity growth, mid-year: TV_N/(1+r)^(N−0.5); exit multiple, or end-of-year discounting: TV_N/(1+r)^N |
+| FFO (D.2) | CFO + ΔNWC, with ΔNWC = NWC_t − NWC_t−1; or CFO − the cash-flow statement's working-capital lines as reported |
 | Fundamental growth | g = reinvestment rate × ROIC; g = b × ROE |
 | Justified P/E (leading) | (1−b)/(r−g) |
 | Justified P/B | (ROE−g)/(r−g) |
@@ -27,4 +29,4 @@ Part of the `equity-valuation` skill ([SKILL.md](../SKILL.md)). Section numbers 
 | Treasury-stock method | ΔN = n_opts·(P − K)/P, for P > K |
 | Altman Z (1968) | 1.2·WC/TA + 1.4·RE/TA + 3.3·EBIT/TA + 0.6·MVE/TL + 1.0·S/TA |
 | Harmonic mean of multiples | 1 / mean(1/multiple_i) = 1 / mean(yield_i) |
-| Log attribution | ln(ROE_1/ROE_0) = Σ ln(f_i,1/f_i,0) |
+| LMDI attribution (C.1) | ΔROE_i = L·ln(f_i,1/f_i,0), L = (ROE_1 − ROE_0)/ln(ROE_1/ROE_0); Σ ΔROE_i = ROE_1 − ROE_0. Needs all f > 0; otherwise Shapley |

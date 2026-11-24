@@ -22,7 +22,10 @@ All metrics are computed for ≥ 5 fiscal years plus TTM, and benchmarked to the
 - **5-step:** ROE = (NI / EBT) **tax burden** × (EBT / EBIT) **interest burden** × (EBIT / Revenue) **EBIT margin** × (Revenue / Avg Assets) **asset turnover** × (Avg Assets / Avg Equity) **leverage**.
   - Map: NI = `net_income` (or `net_income_common` for common ROE; state which and keep it consistent), EBT = `income_before_tax`, EBIT = `ebit`, equity = `total_equity_parent`.
   - Check: the product of the components equals the directly computed ROE within rounding. Note that NCI makes the leverage term approximate; disclose.
-- **Change attribution:** attribute ΔROE between periods to each factor using log decomposition (ln ROE = Σ ln factor_i, so the contributions sum exactly). Present a waterfall table.
+- **Change attribution:** attribute ΔROE = ROE_1 − ROE_0 to the factors with logarithmic-mean (LMDI) weights:
+  - contribution_i = L × ln(f_i,1 / f_i,0), where L = (ROE_1 − ROE_0) / ln(ROE_1 / ROE_0), and L = ROE_0 when ROE_1 = ROE_0. Because ln ROE = Σ ln f_i, the contributions sum exactly to ΔROE, in ROE points.
+  - LMDI needs every factor to be positive in both periods. If any factor is zero or negative in either period (a loss, a tax benefit, EBT < 0 with EBIT > 0, negative equity), use the Shapley decomposition instead. Each factor's contribution is its average effect over every order in which the factors can be switched from their period-0 to their period-1 values: 6 orders for the 3-step, 120 for the 5-step. It also sums exactly to ΔROE.
+  - State which method was used. Present a waterfall table.
 - **Leverage-separated (operating) decomposition** (Penman / Nissim-Penman): ROE = RNOA + FLEV × (RNOA − NBC), where RNOA = NOPAT / avg net operating assets, FLEV = avg net debt / avg equity, NBC = after-tax net interest / avg net debt. This separates operating profitability from financing effects.
 
 ### C.2 ROIC tree

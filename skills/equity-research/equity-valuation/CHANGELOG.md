@@ -4,6 +4,23 @@ All notable changes to this skill are recorded here. The format follows [Keep a 
 
 ## [Unreleased]
 
+## [2.0.0] - 2026-11-24
+
+Four methodology corrections (roadmap items E1 to E4). The first three change valuation and credit outputs, so the version is MAJOR. Reports made with 1.0.0 are not directly comparable on the affected figures. The report structure and the `equity-valuation-report/1.0` JSON schema are unchanged.
+
+### Fixed
+
+- **FFO sign (D.2).** FFO was defined as CFO − ΔNWC. With ΔNWC = NWC_t − NWC_t−1 (Phase 4), the correct figure is CFO + ΔNWC, so 1.0.0 misstated FFO by 2 × ΔNWC whenever working capital moved. D.2 now defines FFO as cash flow before working-capital changes. It prefers the filing's cash-flow-statement working-capital lines, because the balance-sheet ΔNWC also moves with acquisitions, disposals and FX. *Moves FFO / debt.*
+- **Terminal-value timing under the mid-year convention (A.4).** The perpetuity-growth terminal value was discounted at N. Under the mid-year convention, the flows it capitalizes arrive from N + 0.5 onward, so it is now discounted at N − 0.5. That matches the present value of the mid-year perpetuity exactly. 1.0.0 understated the PV of the terminal value by a factor of (1 + WACC)^0.5, about 3.8% at an 8% WACC. An exit-multiple terminal value is still discounted at N. *Raises FCFF DCF values.*
+- **FCFE discounting (A.5).** The FCFE formula used end-of-year exponents, although A.3 makes mid-year discounting the default. A.5 now uses t − 0.5 and N − 0.5, with the same terminal-value rule as A.4, and defines TV_N = FCFE_{N+1} / (r_e − g). *Raises FCFE DCF values.*
+- **DuPont change attribution (C.1, Section 8, Section 11).** The log decomposition summed to ln(ROE₁/ROE₀) rather than to ΔROE, and could not run when a factor was zero or negative. Contributions now use logarithmic-mean (LMDI) weights, so they sum exactly to ΔROE in ROE points. When any factor is ≤ 0 (a loss, a tax benefit, EBT < 0 with EBIT > 0, negative equity), the Shapley decomposition is used instead. The method used is stated. *Changes the attribution table, not ROE itself.*
+
+### Changed
+
+- The A.8 exit-multiple cross-check now compares TV_N × (1 + WACC)^0.5 with year-end multiples under the mid-year convention, so that both sit at the same date.
+- The formula appendix (Section 11) adds the terminal-value discounting rule and FFO, and replaces the log-attribution row with LMDI.
+- The QA checklist (Section 8) now requires the attribution to sum to ΔROE in ROE points, with the method stated.
+
 ## [1.0.0] - 2026-11-24
 
 ### Added

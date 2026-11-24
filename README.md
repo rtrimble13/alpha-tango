@@ -12,7 +12,7 @@ Skills are organized by financial domain. Each skill is versioned on its own and
 <!-- skills-catalog:begin -->
 | Skill | Domain | Version | What it does |
 |---|---|---|---|
-| [`equity-valuation`](skills/equity-research/equity-valuation/README.md) | equity-research | 1.0.0 | Fundamental equity valuation and analysis to a CFA-charterholder standard. |
+| [`equity-valuation`](skills/equity-research/equity-valuation/README.md) | equity-research | 2.0.0 | Fundamental equity valuation and analysis to a CFA-charterholder standard. |
 <!-- skills-catalog:end -->
 
 The table is generated from each skill's frontmatter by `make catalog`. Planned domains and skills are in the [roadmap](docs/roadmap.md).
