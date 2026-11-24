@@ -15,32 +15,39 @@ Part of the `equity-valuation` skill ([SKILL.md](../SKILL.md)). Section numbers 
 ## 7. Module D: Capital structure
 
 ### D.1 Structure and leverage
+
 - **Composition:** current and non-current debt (`debt_current`, `debt_noncurrent`), leases [S], preferred [S], NCI, equity at book and market value.
 - **Leverage:** D/E (book and market), D/Capital, net debt / EBITDA, debt / assets, FLEV (C.1), financial leverage ratio (assets / equity). Show a 10-year history and the peer median.
 
 ### D.2 Coverage and debt capacity
+
 EBIT / interest, EBITDA / interest, (EBITDA − capex) / interest, FFO / debt (FFO = CFO − ΔNWC, defined), and debt / EBITDA headroom against covenants where covenants are disclosed [S].
 
 ### D.3 Liquidity and maturity
+
 Current, quick and cash ratios; cash and undrawn revolver [S] vs debt due within 12 months (`debt_current`).
 
 The maturity ladder: from the 10-K debt note [S], built as a fit portfolio (2.5). `fit portfolio cashflows` gives principal and coupon by year.
 
 Interest-rate exposure: the fixed vs floating mix [S]. Two separate effects:
+
 - floating debt's **interest cost** under a ±100 bp shock [C];
 - the fixed-rate debt's **fair-value** sensitivity, from `fit portfolio scenario --shifts=-100,0,100` and the key-rate DV01 ladder from `fit portfolio risk` [C].
 
 Also report the debt's weighted duration (`fit portfolio value` totals) and the refinancing need over the next 3 years at today's curve plus the A.2.5 spread.
 
 ### D.4 Credit view
+
 - Agency ratings and outlook [S] if any.
 - Synthetic rating from coverage (A.2.5) and its implied spread; a comparison with the market spread (FRED OAS for that bucket [D]).
 - Distress metrics: Altman Z, interest coverage below 1.5×, negative equity, going-concern language [S].
 
 ### D.5 Payout and dilution
+
 Dividends, buybacks (−`net_equity_issuance`), total shareholder yield, payout vs FCF (are distributions funded by debt?), net share issuance (`net_share_issuance_1y`), and SBC dilution.
 
 ### D.6 Cost of capital and optimal structure
+
 - **Unlever/relever (Hamada):** β_L = β_U [1 + (1 − t) D/E]. State the assumption that debt beta is 0, or use a cited debt beta for high leverage.
 - **WACC curve:** at D/(D+E) from 0% to 70% in 10-point steps:
   - relever β and recompute r_e;
@@ -53,4 +60,5 @@ Dividends, buybacks (−`net_equity_issuance`), total shareholder yield, payout 
 - **MM framing:** state where the analysis relies on Modigliani-Miller propositions with taxes, and which frictions (distress costs) are modelled through the rating-spread mechanism.
 
 ### D.7 Output
+
 A capital-structure table (T-6), coverage and liquidity history, the credit view, the WACC-curve table and chart, and conclusions: is the structure appropriate, what are the risks, and what does it imply for the WACC used in Module A.

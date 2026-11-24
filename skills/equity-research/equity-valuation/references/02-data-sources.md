@@ -58,6 +58,7 @@ Prefer the **MCP read profile** (`fafnir-mcp --profile read`). Fall back to `duk
 ### 2.3 fafnir data semantics you must respect
 
 #### 2.3.1 General
+
 - **Coverage.** Statements are Sharadar SF1 for linked U.S.-listed securities, back to the early 1990s. The factor panel and survivorship-free cross-sections start on **1998-01-01**. Dead issuers are kept: never filter them out of historical cross-sections.
 - **The primary share class only.** SF1 files an issuer under one class (GOOGL, BRK.B). A secondary class has no statements or market cap; tools answer with the primary class and say so in `statements_of`. Value the issuer once, then convert to the requested class with the share factor or the filing's conversion terms, cited.
 - **Currency.** Statement amounts are in `reported_currency`. If it differs from the trading currency, fafnir's price-based ratios are NULL (`currency_mismatch`). Convert with a cited FX rate (FRED `DEX…` series via dismal) at the right dates: period-average for flows, period-end for stocks.
@@ -70,6 +71,7 @@ Prefer the **MCP read profile** (`fafnir-mcp --profile read`). Fall back to `duk
 - **No interest income line.** Net interest = `interest_expense` only. Interest income, if needed, comes from the filing.
 
 #### 2.3.2 Point-in-time reading and TTM
+
 - A statement version is **in force** at D when `superseded_at IS NULL AND known_from <= D AND (known_to IS NULL OR D < known_to)`. The tools apply this rule when given `as_of`.
 - `knowledge_source`: `filed` (first report, known from the SEC filing date), `observed` (a restatement, known from the day fafnir loaded it), `estimated` (inferred from the next filing). For strict historical work, flag or exclude `estimated` rows.
 - **Join statements on `fiscal_date`**, never on knowledge dates.
@@ -77,6 +79,7 @@ Prefer the **MCP read profile** (`fafnir-mcp --profile read`). Fall back to `duk
 - **Average balances** = mean of the current and year-ago period-end balances. NULL without the year-ago balance.
 
 #### 2.3.3 The factor panel: definitions to use, not re-invent
+
 When a metric exists in `factor_row`, use fafnir's definition for consistency, and cite the column. Key definitions (fafnir `doc/fundamentals.md`):
 
 | Column | Definition |
@@ -130,12 +133,14 @@ Run `dismal doctor` (or `dismal fred doctor`) first. Pass `--format json` or `cs
 `fit` (`rtrimble13/fit`, C++20 CLI, v0.1) turns market yields into a curve and prices fixed-rate debt off it. Everything it computes is `[C]`. Its inputs are dismal yields `[D]`, filing terms `[S]` and cited prices or spreads `[S]`/`[X]`. Record the exact command line, input CSV file and output in the Computation Register.
 
 **Contract**
+
 - Check availability with `fit --version`. If it is missing, build it per its README (`cmake --preset release && cmake --build --preset release`), or do the step by a disclosed alternative method.
 - Always run with `--format json` (full precision, 12 significant digits). Exit code 0 means success, 1 a data or runtime error, 2 a usage error. Errors are on stderr, and a failed run writes nothing to stdout.
 - Units: rates, coupons and yields in **percent**; spreads and shifts in **bp**; prices per 100 face, clean unless stated. Zero rates are continuously compounded on ACT/365F (`zero_cc_pct`). `zero_sa_pct` and `par_sa_pct` are semi-annual. State which one each valuation input uses.
 - **Never use `examples/data/*.csv`.** It is illustrative, not market data.
 
 **Building the risk-free curve from dismal (`fit curve build`)**
+
 1. Write a quotes CSV (`type,tenor,rate[,daycount,frequency]`) from the dismal pull in 2.4, with a comment line citing the dismal command and date.
 2. Map conventions:
    - 1-year to 30-year constant-maturity yields are semi-annual par yields: `par` (fit's default, semi-annual ACT/ACT).
@@ -161,6 +166,7 @@ Run `dismal doctor` (or `dismal fred doctor`) first. Pass `--format json` or `cs
 | PV of disclosed debt-like cashflows (lease or pension schedules) | `fit bond cashflows` / zero-coupon positions at the cited discount spread; or discount factors from `fit curve query --dates …` | A.9 |
 
 **Limits (v0.1):** fit handles fixed-rate bullet and zero-coupon bonds in one currency only. It does not price floaters, callables, convertibles, amortizing term loans or inflation-linked bonds. Its only spread measure is z-spread (continuously compounded: no OAS, G-spread or asset-swap spread), and its risk measures come from zero-rate bumps. For instruments outside that scope:
+
 - use the carrying value or the 10-K fair-value disclosure `[S]`;
 - approximate a floater at par plus or minus its spread (disclosed);
 - for a callable, use the yield-to-worst price from a cited source;

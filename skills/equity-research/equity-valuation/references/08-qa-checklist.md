@@ -5,6 +5,7 @@ Part of the `equity-valuation` skill ([SKILL.md](../SKILL.md)). Section numbers 
 ## 8. Quality-assurance checklist (complete before reporting)
 
 **Data**
+
 - [ ] Every input value has a Source Ledger ID; every Tier 2–4 value has a URL or accession number, location and retrieval date.
 - [ ] As-of discipline: no statement with `known_from` > as-of; no price after the price date; macro values from the correct vintage; external sources published on or before the as-of date.
 - [ ] Phase 2 reconciliations pass (≤ 0.5%) or are explained.
@@ -13,6 +14,7 @@ Part of the `equity-valuation` skill ([SKILL.md](../SKILL.md)). Section numbers 
 - [ ] NULLs are reported as n.m., not zeros.
 
 **Model integrity**
+
 - [ ] The balance sheet balances in forecasts: assets = liabilities + parent equity + NCI.
 - [ ] FCFF from the CFO route and the NOPAT route reconcile, or the difference is explained.
 - [ ] g < WACC (and < r_e); terminal g ≤ r_f and ≤ the cited nominal GDP anchor.
@@ -27,10 +29,12 @@ Part of the `equity-valuation` skill ([SKILL.md](../SKILL.md)). Section numbers 
 - [ ] TV share of value is reported.
 
 **Reproducibility**
+
 - [ ] The calculation script runs from the saved data files and reproduces every number in the report.
 - [ ] Rounding is applied only at presentation.
 
 **Report**
+
 - [ ] Every required section and table in Section 9 is present, or marked "not applicable" with the reason.
 - [ ] Data gaps and limitations are listed.
 - [ ] Neutral language and the disclaimer are included.

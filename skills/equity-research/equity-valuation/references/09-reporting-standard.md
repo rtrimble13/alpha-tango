@@ -17,6 +17,7 @@ Part of the `equity-valuation` skill ([SKILL.md](../SKILL.md)). Section numbers 
 ## 9. Reporting standard
 
 ### 9.1 Principles
+
 1. **Conclusion first**, then evidence, then method.
 2. **Traceable:** every number links to a source ID, a formula or an assumption ID.
 3. **Consistent:** the same section order, table IDs, units and conventions in every report, so reports on different companies can be compared side by side.
@@ -24,6 +25,7 @@ Part of the `equity-valuation` skill ([SKILL.md](../SKILL.md)). Section numbers 
 5. **Reproducible:** the report, the calculation script and the data files form one package.
 
 ### 9.2 Provenance tags and citation format
+
 - Inline tags after each value: `$394.3bn [F3]`, `4.21% [D1]`, `21.0% [X2]`, `8.4% [C7]`, `3.0% [A4]`.
 - **Source Ledger entry:** `ID | Tier | Source | Exact query/locator | As-of / vintage | Retrieved (UTC) | Notes`.
   - fafnir: the tool and its arguments, for example `statements_as_of(symbol=AAPL, statement=income, period=annual, as_of=2026-11-20)`.
@@ -110,6 +112,7 @@ For a single-module task, keep §1, §2, the relevant module section(s), §10, �
 Rules: every assumption cites at least one anchor, or is marked "no direct evidence; judgment" with a reason and is then shown in a sensitivity. User-supplied assumptions are tagged "user-supplied."
 
 ### 9.6 Numerical conventions
+
 - Currency amounts in millions with one decimal ($394,328.0m) in tables. Per-share values to 2 decimals. Ratios and percentages to 1 decimal (yields and costs of capital to 2: 8.47%). Multiples to 1 decimal followed by "x" (24.6x).
 - Dates in ISO format (YYYY-MM-DD). Fiscal periods as FY2025, 2025-Q3 or TTM 2026-Q3, with the fiscal year-end month stated once.
 - Negative values in parentheses in tables. "n.m." for not meaningful; "n.a." for not available. Never a blank.
@@ -117,6 +120,7 @@ Rules: every assumption cites at least one anchor, or is marked "no direct evide
 - Round only at presentation; compute at full precision (fafnir exact decimals).
 
 ### 9.7 Confidence rubric
+
 Report **High**, **Medium** or **Low** with the reasons:
 
 | Factor | High | Low |
@@ -162,9 +166,11 @@ Overall confidence is the lowest factor, unless the report explains why that fac
   "assumptions": [{"id": "A1", "name": "", "value": 0.0, "anchors": ["D1"]}]
 }
 ```
+
 Rates are decimals (0.0847). Values are in the valuation currency, per share unless the key says otherwise.
 
 ### 9.9 Language
+
 - Use: "estimated", "implies", "the evidence suggests", "under these assumptions". Avoid: "will", "guaranteed", "clearly undervalued".
 - Attribute every claim about the company's strategy or outlook to its source ("management guided to … [S4]").
 - Quote filings sparingly (short excerpts only) and paraphrase otherwise.

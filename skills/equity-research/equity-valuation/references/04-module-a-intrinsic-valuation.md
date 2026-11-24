@@ -42,6 +42,7 @@ Choose a **primary** model and at least one **cross-check** model, and justify b
 ### A.2 Cost of capital
 
 #### A.2.1 Risk-free rate
+
 - Default: `DGS10` on the as-of date [D], in the currency of the cash flows. For non-USD flows, use that sovereign's local-currency yield from a Tier 1/3 source, adjusted for default spread if the sovereign is not AAA (cite Damodaran's country default spreads).
 - Use the same rate in CAPM, the cost of debt and the terminal-growth ceiling.
 - **Curve checks with fit (2.5).** Build the Treasury curve on the as-of date and report the 10-year par and zero rates beside `DGS10`. They should agree to within about 1 bp on par. Also report:
@@ -51,11 +52,13 @@ Choose a **primary** model and at least one **cross-check** model, and justify b
   The CAPM r_f stays `DGS10` unless the report states and justifies another tenor, because the ERP source (A.2.2) is quoted over a specific tenor.
 
 #### A.2.2 Equity risk premium
+
 - No default number. Choose one source per 2.6 and record the value, edition/month and method (implied vs historical; arithmetic vs geometric; window). The ERP must match the risk-free rate's basis (an ERP over T-bonds with the 10-year).
 - Country risk premium only for material non-domestic operations, from Damodaran's CRP table [X], weighted by a cited revenue/operations split [S].
 - **Size, company-specific or "alpha" premia are not added by default.** If the user asks for one, it needs a cited source and is shown as a separate line with sensitivity.
 
 #### A.2.3 Beta (estimate it; don't download it)
+
 1. **Regression beta [C]:** OLS of the stock's adjusted returns on SPY adjusted returns [F]. Default: 5 years of monthly returns (60 observations). Alternative: 2 years of weekly returns. Use the same dates for both series. Report β, standard error, R², observation count and window.
 2. **Adjusted beta [C]:** Blume, β_adj = 0.67 β_raw + 0.33. Disclose it.
 3. **Bottom-up beta [C] (preferred when the regression SE > 0.25, R² < 0.2, the company has fewer than 2 years of history, or its business mix has changed):**
@@ -67,11 +70,14 @@ Choose a **primary** model and at least one **cross-check** model, and justify b
 5. State the chosen beta and why. Show cost of equity at ±0.2 beta in the sensitivity.
 
 #### A.2.4 Cost of equity
+
 - CAPM: r_e = r_f + β × ERP (+ CRP × exposure, if applied).
 - Cross-checks, where data exists: implied cost of equity from the Gordon model at the current price (r = D1/P0 + g), and a bond-yield-plus-premium approach (company's cost of debt + a cited premium). Report any divergence greater than 150 bp and explain it.
 
 #### A.2.5 Cost of debt
+
 In order of preference:
+
 1. **Market yield** on the company's long-dated bonds, when a cited price exists [S/X] (for example, FINRA TRACE last sale, with date and size). Compute the YTM and z-spread with `fit bond yield … --price P --curve treasury.csv` [C], using the bond's terms from its indenture or the 10-K debt note [S]. When there are several bonds, use a face-weighted or longest-maturity spread, and state which. r_d = the curve's par rate at the WACC tenor + that spread.
 2. **Agency rating** [S] → current spread for that rating (FRED ICE BofA OAS by rating, or Damodaran's table) + r_f.
 3. **Synthetic rating** [C]: interest coverage (EBIT / interest expense, TTM [F]) → rating → spread, using the current Damodaran table (large-firm or small/risky-firm version, stated) [X].
@@ -80,6 +86,7 @@ In order of preference:
 After-tax cost of debt = r_d × (1 − marginal t). Leases are included in debt only if included in the debt weight, and vice versa (consistency rule).
 
 #### A.2.6 Weights and WACC
+
 - **Market-value weights.** Equity = market cap on the price date [F]. Debt at fair value, in order of preference:
   1. a fit valuation on the as-of date [C]: `fit portfolio value` of the fixed-rate notes listed in the 10-K debt note [S], each marked at a cited price or at the A.2.5 spread, plus out-of-scope instruments at carrying value [S], disclosed;
   2. the 10-K fair-value disclosure [S], which is as of the fiscal year end and must be dated in the report;
@@ -103,26 +110,33 @@ After-tax cost of debt = r_d × (1 − marginal t). Leases are included in debt 
 - **Base year:** TTM by default (as of the knowledge date), or the last fiscal year when TTM is unavailable. Use mid-year discounting by default. Handle the stub period from the as-of date to the first fiscal year end explicitly.
 
 ### A.4 FCFF DCF (enterprise)
+
 Value_firm = Σ_{t=1..N} FCFF_t / (1+WACC)^(t−0.5) + TV_N / (1+WACC)^N (mid-year convention; state it). TV_N = FCFF_{N+1} / (WACC − g), with FCFF_{N+1} = NOPAT_{N+1} × (1 − g / ROIC_new). Then the bridge to equity (A.9).
 
 ### A.5 FCFE DCF (equity)
+
 Value_equity = Σ FCFE_t / (1+r_e)^t + TV_N / (1+r_e)^N. Requires an explicit debt path. Net borrowing is consistent with the stated leverage target.
 
 ### A.6 Dividend discount models
+
 - **Gordon:** V0 = D1 / (r_e − g), with D1 = D0 (1+g). D0 = TTM DPS from `corporate_actions` [F]. Requires g < r_e and a sustainable g, checked against b × ROE.
 - **Two-stage:** explicit high-growth dividends, then Gordon.
 - **H-model:** V0 = [D0 (1+g_L) + D0 H (g_S − g_L)] / (r − g_L), with H = half-life of the linear fade, in years.
 - **Three-stage:** growth, transition and maturity stages, each with the payout ratio consistent with growth (payout = 1 − g/ROE).
 
 ### A.7 Residual income
+
 V0 = B0 + Σ (E_t − r_e B_{t−1}) / (1+r_e)^t + TV, where B is book equity (`total_equity_parent` [F]) and E is NI to common. Requires clean-surplus checks: B_t = B_{t−1} + E_t − D_t ± net issuance. Flag dirty-surplus items (AOCI moves) from `accumulated_other_comprehensive_income`. Terminal options are stated: residual income persists, fades (persistence factor ω, cited or justified), or ends at N. The justified P/B for the cross-check is (ROE − g)/(r_e − g).
 
 ### A.8 Terminal value constraints
+
 - **Nominal g ≤ the risk-free rate**, and ≤ the long-run nominal GDP growth anchor [D] (for example, CBO potential real growth from `GDPPOT` plus expected inflation from `T10YIE`). Both anchors are shown.
 - Report TV as % of total value. More than 75% is flagged and requires a reverse-DCF discussion.
 - **Exit-multiple cross-check:** terminal value ÷ terminal-year EBITDA (and the implied P/E) against peer and own-history ranges from Module B. A gap of more than ±30% from the peer median must be explained.
 
 ### A.9 Enterprise value to equity value per share
+
+```text
 Equity value = Enterprise value
  + cash and equivalents [F] (+ non-operating investments, if justified, cited)
  − total debt: fair value per A.2.6 (fit [C], or 10-K [S]), else book [F]; the same figure as in the WACC weights
@@ -132,16 +146,19 @@ Equity value = Enterprise value
  − unfunded pension/OPEB, net of tax [S]
  − other debt-like items (litigation reserves, contingent consideration) [S]
  + equity-method investments and other non-consolidated assets at a cited value [S]
+```
 
 Per share = equity value ÷ diluted shares. Diluted shares = basic shares outstanding on the as-of date (`shares_outstanding_as_of` [F] or the latest 10-Q cover [S]) + in-the-money options and RSUs (treasury-stock method, at the estimated value: iterate) + convertibles if in the money (if-converted). Each item is listed with its source.
 
 ### A.10 Sensitivity, scenarios and the market-implied view
+
 - **Sensitivity grids (required):** WACC (±100 bp in 50 bp steps) × terminal g (±100 bp in 50 bp steps). Also terminal operating margin × revenue CAGR.
 - **Scenarios:** bear, base and bull, each a coherent set of drivers with a narrative. Probability weights only if the user requests them or evidence supports them; otherwise present the scenarios unweighted.
 - **Reverse DCF:** solve for the revenue CAGR (or terminal margin) that the current price implies, holding the other assumptions at base. Compare with history and peers.
 - **Fair value conclusion:** a point estimate (the primary model's base case) and a range (bounded by the sensitivity and scenario results, stated). If the cross-check models differ from the primary by more than 15%, explain why. Weight methods only with a stated rationale.
 
 ### A.11 Special situations
+
 - **Negative earnings or EBIT:** do not capitalize losses. Model the path to a cited steady-state margin, and survival risk (Module D distress metrics). Value per share must account for dilution from likely financing.
 - **Financials:** debt is raw material, so use equity-side models only. Regulatory capital ratios come from filings [S].
 - **Multi-class issuers:** value the issuer once; per-share values for each class follow the cited conversion terms.
