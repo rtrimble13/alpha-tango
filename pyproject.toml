@@ -1,0 +1,14 @@
+# Tool configuration only. The repository is not a Python package; the code
+# here is the maintenance tooling in scripts/.
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+
+[tool.ruff]
+line-length = 110
+target-version = "py310"
+include = ["scripts/**/*.py", "tests/**/*.py"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "SIM"]
