@@ -1,0 +1,47 @@
+name: Skill proposal
+description: Propose a new skill or a new domain.
+labels: ["skill-proposal"]
+body:
+  - type: input
+    id: name
+    attributes:
+      label: Proposed skill name
+      description: Lowercase letters, digits and hyphens, e.g. bond-relative-value.
+    validations:
+      required: true
+  - type: input
+    id: domain
+    attributes:
+      label: Domain
+      description: An existing domain (e.g. equity-research) or a new one (see docs/roadmap.md).
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: What work should the skill do?
+      description: The questions it answers and who uses it.
+    validations:
+      required: true
+  - type: textarea
+    id: requests
+    attributes:
+      label: Example requests
+      description: Three to five requests that should trigger it, and one or two that should not.
+    validations:
+      required: true
+  - type: textarea
+    id: data
+    attributes:
+      label: Data sources and tools
+      description: Where its inputs come from, and any CLI, MCP server or API it needs.
+  - type: textarea
+    id: outputs
+    attributes:
+      label: Outputs
+      description: The report, tables or files it should produce.
+  - type: textarea
+    id: references
+    attributes:
+      label: Methodology references
+      description: Curriculum, standards or texts the skill should follow.

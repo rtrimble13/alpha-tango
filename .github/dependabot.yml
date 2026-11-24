@@ -1,0 +1,22 @@
+# Keeps pinned GitHub Actions (by commit SHA) and Python tooling current.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      github-actions:
+        patterns: ["*"]
+    commit-message:
+      prefix: "ci"
+
+  - package-ecosystem: pip
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      python-tooling:
+        patterns: ["*"]
+    commit-message:
+      prefix: "deps"

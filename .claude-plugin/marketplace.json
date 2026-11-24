@@ -1,0 +1,26 @@
+{
+  "name": "alpha-tango",
+  "owner": {
+    "name": "rtrimble13"
+  },
+  "description": "Agent skills for financial analysis, organized by domain and published as one Claude Code plugin per domain.",
+  "plugins": [
+    {
+      "name": "equity-research",
+      "description": "Fundamental equity research: intrinsic and relative valuation, profitability and growth decomposition, and capital-structure analysis to a CFA-charterholder standard.",
+      "source": "./",
+      "strict": false,
+      "category": "finance",
+      "tags": [
+        "equity",
+        "valuation",
+        "dcf",
+        "fundamental-analysis",
+        "cfa"
+      ],
+      "skills": [
+        "./skills/equity-research/equity-valuation"
+      ]
+    }
+  ]
+}

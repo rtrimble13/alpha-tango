@@ -221,3 +221,9 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# alpha-tango
+# Skill packages built by `make package` (dist/ is also ignored above)
+dist/
+node_modules/
+.claude/settings.local.json

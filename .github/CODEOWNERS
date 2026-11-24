@@ -1,0 +1,3 @@
+# Default reviewers for every change. Add per-domain owners as domains grow, e.g.
+# /skills/fixed-income/  @fixed-income-reviewer
+*  @rtrimble13

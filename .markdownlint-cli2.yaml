@@ -1,0 +1,23 @@
+# markdownlint-cli2 configuration (https://github.com/DavidAnson/markdownlint-cli2).
+# Run locally with `make lint`; CI runs the same version.
+config:
+  default: true
+  # Prose is not hard-wrapped, and tables are wide.
+  MD013: false
+  # Changelogs repeat "Added", "Changed" and "Fixed" under each version.
+  MD024:
+    siblings_only: true
+  # Compact `|---|` tables are used throughout; column alignment is not enforced.
+  MD060: false
+  # Bold lead-in labels ("**Contract**", "**Data**") are used on purpose in skill text.
+  MD036: false
+  # Plain-text templates inside skills are left without a language tag.
+  MD040: false
+globs:
+  - "**/*.md"
+ignores:
+  - "node_modules/**"
+  - "dist/**"
+  - ".pytest_cache/**"
+  # PR descriptions start at level-2 headings by design.
+  - ".github/pull_request_template.md"
