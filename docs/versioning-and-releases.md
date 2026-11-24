@@ -19,7 +19,7 @@ Every skill is versioned on its own with [Semantic Versioning](https://semver.or
 | Thing | Version lives in | Example | Bumped when |
 |---|---|---|---|
 | A skill | `metadata.version` in its SKILL.md frontmatter | `"1.0.0"` | Any change to a file the skill ships (SKILL.md, `references/`, `scripts/`, `assets/`) |
-| A skill's output schema | Inside the skill's instructions | `equity-valuation-report/1.0` | The structure of a machine-readable output changes |
+| A skill's output schema | Inside the skill's instructions | `equity-valuation-report/1.1` | The structure of a machine-readable output changes |
 | The repository (tooling, CI, docs) | Dated sections in the root [CHANGELOG.md](../CHANGELOG.md) | `## 2026-11-24` | Not versioned; changes are logged by date |
 
 A skill's user guide (`README.md`) and `CHANGELOG.md` are not shipped. Editing only those files needs no version bump.

@@ -99,7 +99,7 @@ Name reference files so that their order and contents are obvious. `equity-valua
 | **Integrity of the record** | Bad inputs are investigated and disclosed, never adjusted to make a model work |
 | **Neutral language and a disclaimer** | No personalized advice. Rating language only in a vocabulary the user sets. A standard disclaimer at the end. |
 | **Data-gap protocol** | Try the next source, bound immaterial gaps, disclose proxies, and stop rather than guess |
-| **Machine-readable summary** | A versioned JSON block, such as `equity-valuation-report/1.0`, so that outputs can be compared and checked by tools |
+| **Machine-readable summary** | A versioned JSON block, such as `equity-valuation-report/1.1`, so that outputs can be compared and checked by tools |
 | **Quality gate** | A checklist completed before any output, and an independent review for high-stakes work |
 
 Never hard-code market data in a skill: rates, premiums, tax rates, multiples or company facts. A skill names the source and the method for retrieving each input. Illustrative numbers must be labelled as placeholders, as in equity-valuation 9.5.

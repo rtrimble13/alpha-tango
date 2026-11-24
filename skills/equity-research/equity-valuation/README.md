@@ -6,7 +6,7 @@ Fundamental equity valuation and analysis to a CFA-charterholder standard, with 
 |---|---|
 | **Domain / plugin** | `equity-research` |
 | **Current version** | see `metadata.version` in [SKILL.md](SKILL.md) and the [changelog](CHANGELOG.md) |
-| **Report schema** | `equity-valuation-report/1.0` (Section 9.8) |
+| **Report schema** | `equity-valuation-report/1.1` (Section 9.8) |
 | **Runs best in** | Claude Code, or another agent runtime with a shell, Python 3 and the data tools below |
 | **License** | MIT |
 
@@ -96,7 +96,7 @@ A full engagement produces a report package in the working directory:
 | **Report** (Markdown) | Twelve sections in a fixed order: summary, company and security, historical performance, capital structure and cost of capital, forecast and assumptions, intrinsic valuation, relative valuation, valuation synthesis, risks, data gaps, appendices and disclaimer. Single-module tasks mark the other sections "out of scope". |
 | **Standard tables** | T-1 summary box to T-14 debt valuation, including peer comparison (T-4), DCF build (T-8), EV-to-equity bridge (T-9), sensitivity grids (T-10), football field (T-11), cost-of-capital build (T-12) and risk-free curve (T-13). |
 | **Registers** | Source Ledger (every retrieved value), Assumption Register (every judgment, with anchor evidence and sensitivity), Computation Register (every fit command). |
-| **JSON summary** | A fenced `equity-valuation-report/1.0` block at the end of the report, for comparing reports across companies or feeding other tools. |
+| **JSON summary** | A fenced `equity-valuation-report/1.1` block at the end of the report, for comparing reports across companies or feeding other tools. Its `generator` field records the skill version that produced the report. |
 | **Calculation script and data files** | The Python script and the CSV/JSON pulls it reads. Rerunning the script reproduces every number in the report. |
 
 ### Provenance tags
@@ -186,7 +186,7 @@ Section numbers are the same as in the original single-file standard, so a cross
 
 ## Versions
 
-The skill version is in `metadata.version` in SKILL.md. Every change is recorded in [CHANGELOG.md](CHANGELOG.md). The skill version and the report schema (`equity-valuation-report/1.0`) are versioned separately. A change to the JSON summary's structure bumps the schema and is a MAJOR change to the skill. See [docs/versioning-and-releases.md](../../../docs/versioning-and-releases.md).
+The skill version is in `metadata.version` in SKILL.md. Every change is recorded in [CHANGELOG.md](CHANGELOG.md). The skill version and the report schema (`equity-valuation-report/1.1`) are versioned separately, and every report records the skill version in its JSON `generator` field and Appendix F. A change to the JSON summary's structure bumps the schema and is a MAJOR change to the skill. See [docs/versioning-and-releases.md](../../../docs/versioning-and-releases.md).
 
 ---
 

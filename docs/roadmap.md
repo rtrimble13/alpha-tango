@@ -30,7 +30,7 @@ When a new domain arrives, check that its skills' descriptions and the existing 
 | R1 | **Evaluation suites** per domain under `evals/`, run with `claude plugin eval` | Today CI checks structure only. Evals check whether a skill triggers on the right requests, and whether its outputs meet the standard. Comparing a run with and without the plugin shows what the skill adds. | Start with trigger and no-trigger cases. Then add golden cases with a fixed as-of date and graders for the QA checklist. Runs cost tokens, so run on demand or nightly, not on every PR. |
 | R2 | **Reviewer subagent** shipped in the `equity-research` plugin | equity-valuation already calls for "a separate reviewer agent" for high-stakes work. Shipping one makes that review repeatable. | A Claude Code agent definition listed in the plugin entry. It reruns Section 8 and recomputes the summary from the saved script and data. |
 | R3 | **Shared, tested calculation library** | Prime directive 5 sends all arithmetic to code, but every engagement writes that code from scratch. A tested library removes a large source of variance and error, and saves tokens. | Per-skill `scripts/` first, for example WACC, DCF with stub and mid-year handling, LMDI DuPont attribution, TTM contiguity, harmonic means, beta regression, treasury-stock iteration. Promote to a shared package once two skills need the same code. |
-| R4 | **JSON Schemas for machine-readable outputs** | Turns `equity-valuation-report/1.0` into something a tool can check, in the QA phase and in downstream systems. | `assets/report.schema.json`, plus a validation script that the skill runs before reporting |
+| R4 | **JSON Schemas for machine-readable outputs** | Turns `equity-valuation-report/1.1` into something a tool can check, in the QA phase and in downstream systems. | `assets/report.schema.json`, plus a validation script that the skill runs before reporting |
 | R5 | **Release provenance** | Lets users verify that a release zip was built by this repository's workflow | Add `actions/attest-build-provenance` to the release job |
 | R6 | **Documentation site** | Search and navigation once there are several domains | MkDocs or GitHub Pages built from `docs/` and each skill's README |
 | R7 | **Per-domain code owners** | Methodology review by someone who knows the domain | Extend `.github/CODEOWNERS` as domains gain maintainers |
@@ -43,7 +43,8 @@ A review of the 1.0.0 text found the items below. Each changes methodology or be
 | Status | Items |
 |---|---|
 | **Applied in 2.0.0** | E1 to E4 (methodology) |
-| Open | E5 to E14 |
+| **Applied in 2.1.0** | E5 (description scope), E7 (skill version in reports) |
+| Open | E6, E8 to E14 |
 
 ### Methodology (applied in 2.0.0)
 
@@ -54,7 +55,7 @@ A review of the 1.0.0 text found the items below. Each changes methodology or be
 | E3 | A.5 vs A.3 | A.3 makes mid-year discounting the default, but the FCFE formula in A.5 uses end-of-year exponents. | Align A.5 with A.3, or state why FCFE differs | MAJOR |
 | E4 | C.1, Section 8, Section 11 | Log attribution `ln ROE = Σ ln factor_i` fails when any factor is zero or negative: a loss year, a tax benefit, EBT < 0 with EBIT > 0. Its terms also sum to ln(ROE₁/ROE₀), not to ΔROE, which the QA checklist requires. | Scale the log contributions by the logarithmic mean L = ΔROE / ln(ROE₁/ROE₀) (LMDI), so that they sum to ΔROE in points. When a factor is ≤ 0, fall back to Shapley (average sequential substitution) and disclose it. | MINOR |
 
-### Behavior and triggering
+### Behavior and triggering (E5 and E7 applied in 2.1.0)
 
 | ID | Where | Observation | Proposal | Bump |
 |---|---|---|---|---|

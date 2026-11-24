@@ -38,5 +38,6 @@ Part of the `equity-valuation` skill ([SKILL.md](../SKILL.md)). Section numbers 
 - [ ] Every required section and table in Section 9 is present, or marked "not applicable" with the reason.
 - [ ] Data gaps and limitations are listed.
 - [ ] Neutral language and the disclaimer are included.
+- [ ] The JSON summary's `generator` names this skill and the `metadata.version` read from its SKILL.md, and Appendix F repeats it.
 
 For high-stakes work (the user says the report will be published or used for a decision), a separate reviewer agent that did not build the model reruns this checklist and recomputes the summary figures from the saved script and data.
