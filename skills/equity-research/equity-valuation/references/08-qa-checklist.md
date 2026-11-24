@@ -24,7 +24,7 @@ Part of the `equity-valuation` skill ([SKILL.md](../SKILL.md)). Section numbers 
 - [ ] Every fit-valued instrument is fixed-rate bullet or zero-coupon. Others are at carrying or fair value [S] and disclosed.
 - [ ] The EV → equity bridge includes every claim in A.9 or discloses its omission.
 - [ ] Diluted shares are documented.
-- [ ] DuPont components multiply to ROE; attribution sums to ΔROE.
+- [ ] DuPont components multiply to ROE; attribution sums to ΔROE in ROE points, by LMDI or (when a factor is ≤ 0) Shapley, as stated (C.1).
 - [ ] The implied exit multiple and the reverse-DCF result are reasonable against Module B, or explained.
 - [ ] TV share of value is reported.
 

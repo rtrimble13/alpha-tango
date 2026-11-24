@@ -4,7 +4,7 @@ description: Fundamental equity valuation and analysis to a CFA-charterholder st
 license: MIT
 compatibility: Built for Claude Code or another agent runtime with a shell and Python 3. Needs the fafnir warehouse (fafnir-mcp read profile or the duk CLI), the dismal and fit CLIs, and web access to SEC EDGAR and Damodaran Online. Without them the skill can only run its data-gap protocol.
 metadata:
-  version: "1.0.0"
+  version: "2.0.0"
   domain: equity-research
 ---
 

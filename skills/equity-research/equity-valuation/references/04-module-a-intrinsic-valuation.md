@@ -111,11 +111,15 @@ After-tax cost of debt = r_d × (1 − marginal t). Leases are included in debt 
 
 ### A.4 FCFF DCF (enterprise)
 
-Value_firm = Σ_{t=1..N} FCFF_t / (1+WACC)^(t−0.5) + TV_N / (1+WACC)^N (mid-year convention; state it). TV_N = FCFF_{N+1} / (WACC − g), with FCFF_{N+1} = NOPAT_{N+1} × (1 − g / ROIC_new). Then the bridge to equity (A.9).
+Value_firm = Σ_{t=1..N} FCFF_t / (1+WACC)^(t−0.5) + TV_N / (1+WACC)^(N−0.5) (mid-year convention; state it). TV_N = FCFF_{N+1} / (WACC − g), with FCFF_{N+1} = NOPAT_{N+1} × (1 − g / ROIC_new).
+
+**Terminal-value timing.** Under the mid-year convention, the flows that TV_N capitalizes arrive at N + 0.5, N + 1.5, and so on. The Gordon formula therefore gives their value at N − 0.5, so TV_N is discounted at N − 0.5, not N. A terminal value set by an exit multiple is a year-end value, and is discounted at N. With end-of-year discounting (if stated instead), every exponent is t, and TV_N is discounted at N.
+
+Then the bridge to equity (A.9).
 
 ### A.5 FCFE DCF (equity)
 
-Value_equity = Σ FCFE_t / (1+r_e)^t + TV_N / (1+r_e)^N. Requires an explicit debt path. Net borrowing is consistent with the stated leverage target.
+Value_equity = Σ FCFE_t / (1+r_e)^(t−0.5) + TV_N / (1+r_e)^(N−0.5), with TV_N = FCFE_{N+1} / (r_e − g). This is the mid-year convention of A.3 and A.4, with the same terminal-value timing. An exit-multiple TV is discounted at N. With end-of-year discounting (if stated instead), the exponents are t and N. Requires an explicit debt path. Net borrowing is consistent with the stated leverage target.
 
 ### A.6 Dividend discount models
 
@@ -132,7 +136,7 @@ V0 = B0 + Σ (E_t − r_e B_{t−1}) / (1+r_e)^t + TV, where B is book equity (`
 
 - **Nominal g ≤ the risk-free rate**, and ≤ the long-run nominal GDP growth anchor [D] (for example, CBO potential real growth from `GDPPOT` plus expected inflation from `T10YIE`). Both anchors are shown.
 - Report TV as % of total value. More than 75% is flagged and requires a reverse-DCF discussion.
-- **Exit-multiple cross-check:** terminal value ÷ terminal-year EBITDA (and the implied P/E) against peer and own-history ranges from Module B. A gap of more than ±30% from the peer median must be explained.
+- **Exit-multiple cross-check:** terminal value ÷ terminal-year EBITDA (and the implied P/E) against peer and own-history ranges from Module B. Under the mid-year convention, use TV_N × (1+WACC)^0.5, which is the perpetuity-growth value moved to the year-end date N, so that it is comparable with a year-end exit multiple (A.4). A gap of more than ±30% from the peer median must be explained.
 
 ### A.9 Enterprise value to equity value per share
 

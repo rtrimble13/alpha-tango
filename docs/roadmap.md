@@ -38,9 +38,14 @@ When a new domain arrives, check that its skills' descriptions and the existing 
 
 ## Proposed changes to equity-valuation
 
-A review of the 1.0.0 text found the items below. They are **not applied**, because each changes methodology or behavior and needs the author's decision. Each lists the version bump it would need. The 1.0.0 release itself only fixed a broken cross-reference and Markdown rendering (see the [changelog](../skills/equity-research/equity-valuation/CHANGELOG.md)).
+A review of the 1.0.0 text found the items below. Each changes methodology or behavior and needed the author's decision, and each lists the version bump it needs. The 1.0.0 release itself only fixed a broken cross-reference and Markdown rendering. See the [changelog](../skills/equity-research/equity-valuation/CHANGELOG.md) for what each release changed.
 
-### Methodology
+| Status | Items |
+|---|---|
+| **Applied in 2.0.0** | E1 to E4 (methodology) |
+| Open | E5 to E14 |
+
+### Methodology (applied in 2.0.0)
 
 | ID | Where | Observation | Proposal | Bump |
 |---|---|---|---|---|
