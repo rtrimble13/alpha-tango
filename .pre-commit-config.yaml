@@ -1,0 +1,52 @@
+# Install once with `make install` (or `pre-commit install --install-hooks -t pre-commit -t pre-push`).
+# Run everything by hand with `pre-commit run --all-files`.
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: trailing-whitespace
+        args: [--markdown-linebreak-ext=md]
+      - id: end-of-file-fixer
+      - id: mixed-line-ending
+        args: [--fix=lf]
+      - id: check-yaml
+      - id: check-json
+      - id: check-merge-conflict
+      - id: check-added-large-files
+        args: [--maxkb=1024]
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.17.4
+    hooks:
+      - id: ruff-check
+      - id: ruff-format
+
+  - repo: https://github.com/DavidAnson/markdownlint-cli2
+    rev: v0.24.0
+    hooks:
+      - id: markdownlint-cli2
+
+  - repo: local
+    hooks:
+      - id: skillkit-catalog
+        name: sync skill catalog and marketplace.json
+        entry: python scripts/skillkit.py catalog
+        language: python
+        additional_dependencies: [PyYAML==6.0.3]
+        pass_filenames: false
+        files: ^(skills/|README\.md$|\.claude-plugin/)
+      - id: skillkit-validate
+        name: validate skills
+        entry: python scripts/skillkit.py validate
+        language: python
+        additional_dependencies: [PyYAML==6.0.3]
+        pass_filenames: false
+        always_run: true
+      - id: skillkit-check-versions
+        name: require version bumps for changed skills
+        entry: python scripts/skillkit.py check-versions --base origin/main
+        language: python
+        additional_dependencies: [PyYAML==6.0.3]
+        pass_filenames: false
+        always_run: true
+        stages: [pre-push]

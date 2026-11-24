@@ -1,0 +1,47 @@
+name: Skill problem
+description: A skill gave a wrong, unsupported or badly formatted result, or failed to load or trigger.
+labels: ["skill-problem"]
+body:
+  - type: input
+    id: skill
+    attributes:
+      label: Skill and version
+      description: Name and metadata.version, e.g. equity-valuation 1.0.0.
+    validations:
+      required: true
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Kind of problem
+      options:
+        - Methodology or formula error
+        - Number not traceable to a source, computation or assumption
+        - Wrong or stale data used
+        - Report format or required section missing
+        - Did not trigger, or triggered on the wrong request
+        - Installation or loading
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: request
+    attributes:
+      label: Request
+      description: What you asked, with the as-of date and any parameters you set.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected and actual behaviour
+      description: Quote the relevant part of the output. Cite the section of the skill (for example A.2.5 or T-9) you believe was not followed.
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: Surface (Claude Code / claude.ai / API), Claude Code version, and data tool versions if relevant.
+  - type: markdown
+    attributes:
+      value: Do not paste credentials, API keys or confidential client data.

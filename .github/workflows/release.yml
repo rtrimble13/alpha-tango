@@ -1,0 +1,54 @@
+# Publishes a GitHub release for every skill version on main that has no tag yet.
+#
+# A skill is released when its metadata.version (in SKILL.md) changes on main.
+# The tag is <skill-name>-v<version>, and the release carries the skill's zip
+# package, its SHA-256 checksum, and the matching CHANGELOG.md section as notes.
+# See docs/versioning-and-releases.md.
+name: Release
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "skills/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  # Never run two releases at once; never cancel one half-way.
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Release new skill versions
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # Full history and tags, so already-released versions are recognized.
+          fetch-depth: 0
+
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: "3.13"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+
+      - name: Install dependencies
+        run: python -m pip install -r requirements-dev.txt
+
+      - name: Test skillkit
+        run: python -m pytest -q
+
+      - name: Show the release plan
+        run: python scripts/skillkit.py release --dry-run
+
+      - name: Publish releases
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python scripts/skillkit.py release
