@@ -2,6 +2,13 @@
 
 Changes to the repository's structure, tooling, CI and documentation, by date. Each skill has its own versioned `CHANGELOG.md` in its folder. Find them through the [skill catalog](skills/README.md).
 
+## 2026-11-25
+
+### Changed
+
+- Roadmap: added a tooling strategy section (duk keeps warehouse reads, vendor reconciliation reads and `rc`, and gains `duk sc`; `ti` moves to a standalone technical-analysis tool; `yc` moves to fit), with alpha-tango follow-ups T1 to T3. Added an `equity-screening` proposal with top-down and bottom-up modes and a phased plan for fafnir tooling, and enhancement R9 (shared reference files). Updated the technical-analysis proposal for the new tool.
+- Roadmap: corrected the `duk rc` capabilities to what its CLI exposes, and recorded the definition and source of `feedFrozenOn` in E12.
+
 ## 2026-11-24
 
 ### Added

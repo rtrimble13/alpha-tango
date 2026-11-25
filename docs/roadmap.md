@@ -1,10 +1,11 @@
 # Roadmap
 
-Planned domains and skills, and proposed enhancements to the repository and to `equity-valuation`. Everything here is a proposal unless it is marked as applied. Each item becomes an issue, then a pull request, when work starts.
+Planned domains and skills, the tooling strategy they depend on, and proposed enhancements to the repository and to `equity-valuation`. Everything here is a proposal unless it is marked as applied. Each item becomes an issue, then a pull request, when work starts.
 
 ## Contents
 
 - [Domains](#domains)
+- [Tooling strategy](#tooling-strategy)
 - [Repository enhancements](#repository-enhancements)
 - [Proposed changes to equity-valuation](#proposed-changes-to-equity-valuation)
 
@@ -14,7 +15,7 @@ The taxonomy is meant to grow one domain at a time. A domain is created by the f
 
 | Domain (plugin) | Status | Candidate skills |
 |---|---|---|
-| `equity-research` | Active | `equity-valuation` (released). Candidates: `earnings-review` (a quarter's results against history, guidance and the prior model); `equity-screening` (factor screens and cross-sections on the fafnir panel); `sum-of-the-parts` for conglomerates |
+| `equity-research` | Active | `equity-valuation` (released). Candidates: `equity-screening` (top-down and bottom-up screening of the U.S.-listed universe; see the [proposal](#proposal-equity-screening)); `earnings-review` (a quarter's results against history, guidance and the prior model); `sum-of-the-parts` for conglomerates |
 | `fixed-income` | Planned | `treasury-curve` (curve construction and forward analysis with fit and dismal); `corporate-bond-relative-value` (z-spread against rating and sector curves); `credit-analysis` (issuer credit profile, covenants, recovery) |
 | `macro-research` | Planned | `economic-dashboard` (current conditions from FRED/BLS/BEA with vintages); `recession-indicators` |
 | `market-analysis` | Planned | `technical-analysis`: trend, momentum, volatility and volume indicators, support and resistance, and relative strength against a benchmark or sector ETF. Runs on fafnir daily prices; signals are stated as conditions, not forecasts. See the [proposal](#proposal-technical-analysis). |
@@ -24,14 +25,79 @@ The taxonomy is meant to grow one domain at a time. A domain is created by the f
 
 When a new domain arrives, check that its skills' descriptions and the existing ones don't overlap. For example, `equity-valuation` 2.1.0 stopped listing curve work ahead of a `fixed-income` skill (item E5 below).
 
+### Proposal: equity-screening
+
+**Recommendation.** Build a separate skill in `equity-research`, in the same plugin, rather than extending `equity-valuation`:
+
+- The unit of work and the output differ: a universe and a ranked shortlist, against one company and a fair-value report.
+- `equity-valuation`'s per-company gates, such as reconciling three figures to the 10-K, don't scale to thousands of names. A screen needs universe-level gates instead: data-quality flags, stale statements and coverage counts.
+- `equity-valuation`'s description is already 866 of 1,024 characters. Adding screening would blur its triggering, and every valuation would load screening instructions it doesn't use.
+- Screening changes would force version bumps on a skill whose versions signal whether valuation reports are comparable.
+
+Names on the shortlist are handed to `equity-valuation` for full or quick-look valuations.
+
+**Modes.**
+
+- **Bottom-up:** screen the universe on fundamentals and, from 0.2, on price-based factors; rank within sectors; report the shortlist.
+- **Top-down:** go from macro conditions (dismal) to sector and industry tilts, then to names within the favored groups. Every tilt is either computed from data, for example sector sensitivity to rates or growth estimated from sector ETF prices and dismal series, or registered as an assumption. A tilt is never asserted from memory. A full economic-regime analysis belongs to a future `macro-research` skill that screening can draw on.
+
+**What fafnir provides today.** Checked at `632e8a6`.
+
+- `mart.fundamental_panel`: monthly from 1998, about 45 factors per security, survivorship-free.
+- `mart.fn_fundamental_snapshot(D, lag)` for any date, and `mart.security_fundamentals_latest` for current screens.
+- `mart.v_industry_fundamentals`: quartiles of 16 factors by sector and industry at each month-end.
+- dismal macro series with vintages, sector ETF prices, and `market_cap_history` for up to 1,000 securities a call.
+
+**What it needs.**
+
+| Need | Where | Why |
+|---|---|---|
+| A cross-sectional screen: `duk sc`, and an MCP `factor_screen` tool | One served read in `duk.datasource.db`, the duk CLI, and the fafnir MCP server | The read profile has only per-security factor rows. `screen_securities` filters metadata and market cap, with no as-of date. `sql_read` is ops-only and capped at 500 rows. A served read reaches the CLI, the HTTP API and MCP with one implementation. It filters on an allowlist of columns (no free SQL), sorts, limits, aggregates by group, and counts what each filter removes. The MCP tool returns capped shortlists (a default of about 50 rows, and at most 5,000 with the `truncated` flag); `duk sc -o` exports the full cross-section. `screen_securities` stays unchanged, because `equity-valuation` B.1 uses it. |
+| The universe on a date | fafnir `mart` | Listing status, market cap and panel factors as known on the date. `is_actively_trading` is today's flag, so it gives look-ahead in a historical screen. |
+| A price-factor table | fafnir `mart` | Monthly 12-month-minus-1 momentum, volatility, beta against SPY, and average daily dollar volume. The panel is fundamentals-only. |
+| Sector aggregates | fafnir `mart` | Cap-weighted sector valuations and returns for top-down. Quartiles describe the typical member, not the sector. |
+| A calculation library | The skill's `scripts/` | Outlier trimming, z-scores within sector, composite scores, neutralization, deciles, and turnover against the previous screen. fafnir leaves outlier handling to the user on purpose. |
+
+**Each screen reports:**
+
+- the resolved as-of date, and whether it is a panel month-end or an exact-date snapshot;
+- the snapshot's refresh time and the universe definition;
+- the count each filter removed, with NULLs counted as n.m. and currency-mismatch exclusions shown;
+- for each row: `security_id`, fiscal date, knowledge source, days since filing, the currency-mismatch flag, open data-quality flags, and `feedFrozenOn`.
+
+**Scope and limits.**
+
+- The universe is U.S.-listed securities with Sharadar SF1 statements.
+- ADRs that report in another currency have NULL price-based ratios. Either convert them at a cited FX rate, as `equity-valuation` 2.3.1 does, or exclude them and say so.
+- Sector labels are today's, not historical.
+- There are no consensus estimates, so there are no revision or surprise screens.
+- Backtests come later, opt in, and disclose their biases, including the missing delisting returns.
+
+**Boundaries.**
+
+- When this skill ships, `equity-valuation`'s description gains "Not for screening a universe" (T3).
+- `equity-screening`'s description excludes single-company valuation and chart signals.
+- `technical-analysis` excludes cross-sectional ranking.
+
+**Phases.**
+
+| Step | fafnir work | Skill release |
+|---|---|---|
+| 1 | `duk sc` and `factor_screen` over the existing panel; deprecate `ls -S fmp` | `equity-screening` 0.1: bottom-up on fundamentals |
+| 2 | The price-factor table | 0.2: momentum, volatility and liquidity screens |
+| 3 | Sector aggregates and returns | 0.3: top-down mode |
+
+**Shared material.** The skill shares fafnir's data rules (2.3), its factor definitions (2.3.3) and the peer statistics (B.1, B.3) with `equity-valuation`. See R9.
+
 ### Proposal: technical-analysis
 
 **Domain.** Keep it out of `equity-research`, because technical analysis applies to anything with a price history, not just single companies. Separate plugins also stop chart requests from picking up fundamental skills, and the reverse. If it will only ever cover equities and ETFs, putting it in `equity-research` is an acceptable, simpler choice.
 
-**Data and tools.** Checked against fafnir at `ebe7386`.
+**Data and tools.** Checked against fafnir at `632e8a6`.
 
 - fafnir `price_history`: adjusted prices for indicators; raw prices for price levels such as support, resistance and gaps.
-- `duk ti` computes four indicators: SMA, EMA, RSI and MACD. `duk rc` computes simple, log, cumulative, dividend-adjusted, excess and annualized returns. Any other indicator, such as ATR, Bollinger bands, stochastics, ADX or on-balance volume, needs tested code in the skill's `scripts/` or a new `duk ti` subcommand.
+- A standalone technical-analysis tool replaces `duk ti`; see [Tooling strategy](#tooling-strategy). `duk ti` offers four indicators today: SMA, EMA, RSI and MACD. The new tool also needs the others skills use, such as ATR, Bollinger bands, stochastics, ADX and on-balance volume.
+- `duk rc` stays in duk for returns: simple, log, price difference, cumulative and annualized. The tool's own return functions must pass the shared conformance fixture, so the two can't disagree.
 - Volume is stored. `core.daily_price.volume` is raw (shares, in that day's share terms). `mart.v_daily_price_adjusted` back-adjusts it to post-split terms, which volume indicators need across a split. NAV-priced funds carry volume 0, so volume indicators are n.m. for them.
 - Charts are built in Python and saved with the report.
 
@@ -46,6 +112,47 @@ When a new domain arrives, check that its skills' descriptions and the existing 
 
 **Overlap with `equity-screening`.** Momentum as a cross-sectional ranking factor belongs to screening. Chart-based signals on one instrument belong to technical analysis. Each skill's description should exclude the other's requests.
 
+## Tooling strategy
+
+The skills rely on four tools. This is the agreed division of labor, as of 2026-11-25. fafnir facts were checked at `632e8a6`.
+
+| Tool | Role | Changes |
+|---|---|---|
+| **duk** (fafnir's CLI) | Reads the warehouse, locally or over fafnir's HTTP API. The same functions back the fafnir MCP read tools. | Gains `duk sc`. Loses `ti`, `yc` and FMP in `ls`. Keeps vendor reconciliation reads and `rc`. |
+| **fit** | Fixed-income computation | Takes over Treasury-curve work from `duk yc` |
+| **technical-analysis tool** (new, standalone) | Indicators computed on price series | Replaces `duk ti` |
+| **dismal** | Macro and rates data | Unchanged |
+
+### duk after the change
+
+| | |
+|---|---|
+| **Warehouse reads** | Every command, with `-S db` as the default |
+| **Vendor reads** | `ph` and `mc` only, through an explicit `-S fmp` or `-S sharadar`, in the CLI only |
+| **Computation** | `rc`, frozen at return transforms |
+| **Added** | `duk sc`, and a matching MCP `factor_screen` tool ([equity-screening](#proposal-equity-screening)) |
+| **Removed** | `ti` (to the technical-analysis tool); `yc` and its FMP fallback (to fit); `ls -S fmp`, FMP's lists and the FMP-only dividend filter, which the panel's derived `dividend_yield_ttm` replaces; FMP identifier search |
+
+Rules that go with this:
+
+- **Vendor reads exist for reconciliation.** `scripts/reconcile.sh` uses them, and so does `equity-valuation` Phase 2's `duk -S sharadar ph` check. duk shapes every source into the same frame, so a check is a diff of two duk outputs.
+  - A vendor is read only when `-S` names it. No command falls back to a vendor.
+  - Vendor reads are never served over the HTTP API or MCP. API keys stay on the client, and agents read only the warehouse.
+  - Identity is resolved with `-S db`, and the ticker is then passed to the vendor.
+  - Both vendors stay while both subscriptions run, because they catch different errors. A Sharadar read checks the warehouse against its own feed; FMP is an independent second source.
+- **`rc` is frozen at return transforms.** Volatility, Sharpe ratio, drawdown and indicators belong to the technical-analysis tool. Total returns come from adjusted closes, which already include dividends, so dividends are never added again.
+- **A conformance fixture keeps the two return implementations in step.** It is a CSV of prices with the expected output of every return type, including annualization over 252 and 12 periods, and both duk's and the technical-analysis tool's test suites run it. duk annualizes over 252 periods by default, compounding simple returns and scaling log returns; a tool that chose differently would fail the fixture.
+- **Deprecate before removing.** `ls -S fmp` warns for one release before it goes.
+- **Coverage is U.S.-listed for now.** New warehouse objects keep currency explicit: thresholds in the trading currency, labelled, and filtered to USD-traded securities for now. If non-U.S. coverage is needed later, it comes from a vendor loaded into the warehouse with tracked provenance (ADR 0015), not from a vendor screener in duk.
+
+### Follow-ups in alpha-tango, timed with the duk release
+
+| ID | Change | Bump |
+|---|---|---|
+| T1 | `equity-valuation` 2.2 tool map: drop the `duk yc` row, since curve work is already fit's. Drop `duk ti` from the "Returns and indicators" row, since no module uses indicators. Keep `duk rc` and Phase 2's `duk -S sharadar ph`. | MINOR: the tool map changes, outputs don't |
+| T2 | `equity-valuation` B.1: once `factor_screen` ships, peer screens may use it beside `screen_securities` | MINOR |
+| T3 | `equity-valuation` description: add "Not for screening a universe" when `equity-screening` ships | MINOR |
+
 ## Repository enhancements
 
 | ID | Enhancement | Why | Notes |
@@ -58,10 +165,11 @@ When a new domain arrives, check that its skills' descriptions and the existing 
 | R6 | **Documentation site** | Search and navigation once there are several domains | MkDocs or GitHub Pages built from `docs/` and each skill's README |
 | R7 | **Per-domain code owners** | Methodology review by someone who knows the domain | Extend `.github/CODEOWNERS` as domains gain maintainers |
 | R8 | **House configuration** | Several skills will need firm-level settings: rating vocabulary, house ERP, approved vendors, output folder | A documented config file (for example `.alpha-tango/config.yaml` in the user's project) that skills read during intake. See E8. |
+| R9 | **Shared reference files** | `equity-screening` and `equity-valuation` will share fafnir's data rules, factor definitions and peer statistics. Copies kept by hand drift apart. | Maintain each shared file once per domain. `skillkit` copies it into every skill that uses it, and fails the build when a copy drifts. Each skill stays self-contained for upload. |
 
 ## Proposed changes to equity-valuation
 
-A review of the 1.0.0 text found the items below. Each changes methodology or behavior and needed the author's decision, and each lists the version bump it needs. The 1.0.0 release itself only fixed a broken cross-reference and Markdown rendering. See the [changelog](../skills/equity-research/equity-valuation/CHANGELOG.md) for what each release changed.
+A review of the 1.0.0 text found the items below. Each changes methodology or behavior and needed the author's decision, and each lists the version bump it needs. The 1.0.0 release itself only fixed a broken cross-reference and Markdown rendering. See the [changelog](../skills/equity-research/equity-valuation/CHANGELOG.md) for what each release changed. Tool-related follow-ups are T1 to T3 under [Tooling strategy](#tooling-strategy).
 
 | Status | Items |
 |---|---|
@@ -94,6 +202,6 @@ A review of the 1.0.0 text found the items below. Each changes methodology or be
 | ID | Where | Observation | Proposal | Bump |
 |---|---|---|---|---|
 | E11 | 9.7 | The confidence rubric defines only High and Low columns. | Add a Medium column, or define Medium as "neither High nor Low" | PATCH |
-| E12 | B.1 | `feedFrozenOn` is used as a peer screen but not defined, and its source tool is not named | Name the fafnir field and the tool that returns it | PATCH |
+| E12 | B.1 | `feedFrozenOn` is used as a peer screen but is not defined, and the tool that returns it is not named. | Define it in B.1: it is fafnir's own column (ADR 0020), the last session the warehouse holds for a security no vendor feeds. `screen_securities` returns it, from `mart.security_latest` joined to `mart.v_security_profile`; this was checked against fafnir at `632e8a6`. | PATCH |
 | E13 | 2.5 and 9.8 | fit reports rates in percent, while the JSON summary uses decimals | Add a Section 8 checklist item: fit percent outputs are converted to decimals in the JSON summary | PATCH |
 | E14 | A.2.3 | Bottom-up beta unlevers with D/E but doesn't adjust for peers' cash holdings | Optionally use Damodaran's cash-adjusted unlevered beta, β_U / (1 − cash/firm value), for cash-rich peers, stated as a choice | MINOR |
