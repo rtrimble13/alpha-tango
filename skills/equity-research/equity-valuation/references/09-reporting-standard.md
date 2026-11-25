@@ -74,7 +74,8 @@ As of [knowledge date] · Price date [date] · Currency [ccy] · Prepared [times
 ## 11. Appendices
    A. Source Ledger · B. Assumption Register · C. Computation Register
    D. Standardized statements (annual + TTM) · E. Methodology notes
-   F. Reproducibility: script and data file names, tool versions
+   F. Reproducibility: skill name and version (9.8 generator), script and
+      data file names, tool versions
 ## 12. Disclaimer
    "This analysis is for informational purposes. It is not investment advice or
    a recommendation to buy or sell any security. It relies on data whose
@@ -138,7 +139,8 @@ Overall confidence is the lowest factor, unless the report explains why that fac
 
 ```json
 {
-  "schema": "equity-valuation-report/1.0",
+  "schema": "equity-valuation-report/1.1",
+  "generator": {"skill": "equity-valuation", "version": ""},
   "security": {"ticker": "", "security_id": 0, "cik": "", "share_class": "", "currency": ""},
   "as_of": "YYYY-MM-DD", "price_date": "YYYY-MM-DD", "price": 0.0,
   "tasks": ["fair_value", "relative_value", "decomposition", "capital_structure"],
@@ -168,6 +170,8 @@ Overall confidence is the lowest factor, unless the report explains why that fac
 ```
 
 Rates are decimals (0.0847). Values are in the valuation currency, per share unless the key says otherwise.
+
+`generator.version` is the `metadata.version` in this skill's SKILL.md frontmatter. Read that file if the frontmatter is not in context, and never write a version from memory. Schema 1.1 adds `generator` to 1.0; nothing else changed.
 
 ### 9.9 Language
 

@@ -5,7 +5,7 @@ Every skill in the repository, grouped by financial domain. Each domain director
 <!-- skills-catalog:begin -->
 | Skill | Domain | Version | What it does |
 |---|---|---|---|
-| [`equity-valuation`](equity-research/equity-valuation/README.md) | equity-research | 2.0.0 | Fundamental equity valuation and analysis to a CFA-charterholder standard. |
+| [`equity-valuation`](equity-research/equity-valuation/README.md) | equity-research | 2.1.0 | Fundamental equity valuation and analysis to a CFA-charterholder standard. |
 <!-- skills-catalog:end -->
 
 ## Domains

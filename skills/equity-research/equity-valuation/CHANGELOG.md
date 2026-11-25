@@ -4,6 +4,18 @@ All notable changes to this skill are recorded here. The format follows [Keep a 
 
 ## [Unreleased]
 
+## [2.1.0] - 2026-11-24
+
+Roadmap items E5 and E7. Valuation outputs are unchanged.
+
+### Added
+
+- **Skill version in every report (E7).** The JSON summary (9.8) gains `"generator": {"skill": "equity-valuation", "version": ...}`, filled from `metadata.version` in SKILL.md, so reports made under different skill versions can be told apart. The schema moves from `equity-valuation-report/1.0` to `1.1`; the change is additive and every 1.0 field is unchanged. Appendix F (9.3) lists the skill name and version, and the Section 8 checklist checks both.
+
+### Changed
+
+- **Description scope (E5).** The description now presents fit as an input to the equity work (the Treasury curve, and the yield, z-spread, fair value and rate risk of the company's own debt). It says the skill is not for standalone bond, yield-curve or credit analysis, so that it no longer claims requests meant for a future `fixed-income` skill.
+
 ## [2.0.0] - 2026-11-24
 
 Four methodology corrections (roadmap items E1 to E4). The first three change valuation and credit outputs, so the version is MAJOR. Reports made with 1.0.0 are not directly comparable on the affected figures. The report structure and the `equity-valuation-report/1.0` JSON schema are unchanged.

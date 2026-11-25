@@ -1,10 +1,10 @@
 ---
 name: equity-valuation
-description: Fundamental equity valuation and analysis to a CFA-charterholder standard. Use for any request to value a company (intrinsic or fair value, DCF, DDM, residual income), compare its valuation with peers or its own history (multiples, relative value), break down its profitability and growth (DuPont, ROIC trees, margin, working-capital and earnings-quality analysis), or analyze its capital structure (leverage, coverage, cost of capital, optimal structure). Data comes from the fafnir warehouse (prices, point-in-time fundamentals, factors) and dismal (BLS/BEA/FRED economic data), backed by primary filings. Fixed-income work (Treasury curve construction and interpolation, bond yields and z-spreads, fair value and rate risk of a company's debt) runs in fit. Every output follows the reporting standard in Section 9.
+description: Fundamental equity valuation and analysis to a CFA-charterholder standard. Use for any request to value a company (intrinsic or fair value, DCF, DDM, residual income), compare its valuation with peers or its own history (multiples, relative value), break down its profitability and growth (DuPont, ROIC trees, margin, working-capital and earnings-quality analysis), or analyze its capital structure (leverage, coverage, cost of capital, optimal structure). Data comes from the fafnir warehouse (prices, point-in-time fundamentals, factors) and dismal (BLS/BEA/FRED economic data), backed by primary filings. It uses fit for the Treasury curve and for the yield, z-spread, fair value and rate risk of the company's own debt, as inputs to this analysis. Not for standalone bond, yield-curve or credit analysis. Every output follows the reporting standard in Section 9.
 license: MIT
 compatibility: Built for Claude Code or another agent runtime with a shell and Python 3. Needs the fafnir warehouse (fafnir-mcp read profile or the duk CLI), the dismal and fit CLIs, and web access to SEC EDGAR and Damodaran Online. Without them the skill can only run its data-gap protocol.
 metadata:
-  version: "2.0.0"
+  version: "2.1.0"
   domain: equity-research
 ---
 
